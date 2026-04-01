@@ -1,0 +1,468 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ClinicFlow — макет (HTML/CSS/JS)</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="topbar__inner">
+        <div class="brand">
+          <div class="brand__logo" aria-hidden="true">+</div>
+          <div class="brand__text">
+            <div class="brand__title">ClinicFlow</div>
+            <div class="brand__subtitle">80% общения, 20% кликов</div>
+          </div>
+        </div>
+
+        <nav class="role">
+          <button class="chip chip--active" data-role="patient" type="button">Пациент</button>
+          <button class="chip" data-role="reception" type="button">Регистратура</button>
+          <button class="chip" data-role="doctor" type="button">Врач</button>
+        </nav>
+      </div>
+    </header>
+
+    <main class="container">
+      <section class="hero">
+        <div class="hero__left">
+          <div class="badge">Прототип без сервера</div>
+          <h1 class="h1">
+            Как использовать время приёма так, чтобы <span class="accent">80%</span> было общение и
+            поиск решения, а не набор текста
+          </h1>
+          <p class="p">
+            Идея макета: пациент заполняет данные заранее, регистратура ведёт живую очередь, а врач
+            работает в режиме “1 экран = 1 пациент” с шаблонами и автосводкой.
+          </p>
+
+          <div class="hero__actions">
+            <button class="btn btn--primary" id="btnGoWork" type="button">
+              Открыть рабочий экран
+            </button>
+            <button class="btn btn--secondary" id="btnReset" type="button">Сбросить демо</button>
+          </div>
+
+          <div class="kpi">
+            <div class="kpi__item">
+              <div class="kpi__title">Минус ввод</div>
+              <div class="kpi__text">Преданкета до визита</div>
+            </div>
+            <div class="kpi__item">
+              <div class="kpi__title">Минус вкладки</div>
+              <div class="kpi__text">1 экран = 1 пациент</div>
+            </div>
+            <div class="kpi__item">
+              <div class="kpi__title">Минус хаос</div>
+              <div class="kpi__text">Живая очередь + статусы</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero__right">
+          <div class="card">
+            <div class="card__head">
+              <div class="card__title">Демо-сценарий</div>
+              <div class="card__subtitle">сделано под задачу “врач печатает слишком много”</div>
+            </div>
+            <div class="card__body">
+              <ol class="list">
+                <li>Пациент заполняет короткую преданкету (2–4 минуты).</li>
+                <li>Приходит и отмечается “Я на месте” → попадает в живую очередь.</li>
+                <li>Врач видит сводку + шаблоны → меньше ручного текста на приёме.</li>
+              </ol>
+              <div class="hint">
+                Переключай роли сверху и смотри, как одни и те же данные помогают всем участникам.
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="grid" id="workArea">
+        <!-- PATIENT -->
+        <section class="panel" data-screen="patient">
+          <div class="panel__head">
+            <div>
+              <div class="panel__title">Пациент</div>
+              <div class="panel__subtitle">Запись, преданкета, онлайн-очередь</div>
+            </div>
+            <div class="tabs" role="tablist" aria-label="Пациент">
+              <button class="tab tab--active" data-tab="book" type="button">Запись</button>
+              <button class="tab" data-tab="intake" type="button">Преданкета</button>
+              <button class="tab" data-tab="queue" type="button">Очередь</button>
+            </div>
+          </div>
+
+          <div class="panel__body">
+            <div class="view view--active" data-view="book">
+              <div class="two">
+                <div class="card">
+                  <div class="card__head">
+                    <div class="card__title">Запись на приём</div>
+                    <div class="card__subtitle">макет: 3 шага вместо “10 полей”</div>
+                  </div>
+                  <div class="card__body">
+                    <div class="field">
+                      <label class="label">Специальность</label>
+                      <select class="input" id="pSpecialty">
+                        <option>Терапевт</option>
+                        <option>Кардиолог</option>
+                        <option>ЛОР</option>
+                      </select>
+                    </div>
+                    <div class="field">
+                      <label class="label">Врач</label>
+                      <select class="input" id="pDoctor">
+                        <option>Петрова А.В.</option>
+                        <option>Соколов Д.М.</option>
+                      </select>
+                    </div>
+                    <div class="field">
+                      <label class="label">Время</label>
+                      <div class="slots" id="slots"></div>
+                    </div>
+                    <button class="btn btn--primary" id="btnBook" type="button">
+                      Записаться и заполнить преданкету
+                    </button>
+                  </div>
+                </div>
+
+                <div class="card">
+                  <div class="card__head">
+                    <div class="card__title">Что ускоряет приём</div>
+                    <div class="card__subtitle">то, что обычно делают в кабинете</div>
+                  </div>
+                  <div class="card__body">
+                    <ul class="bullets">
+                      <li>Жалобы — выбрать чипами (не печатать вручную)</li>
+                      <li>Аллергии/лекарства — заранее, с предупреждениями</li>
+                      <li>Сводка для врача — готовая перед началом приёма</li>
+                    </ul>
+                    <div class="hint">
+                      В реальной системе здесь будет авторизация/СМС и привязка к карте пациента.
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="view" data-view="intake">
+              <div class="two">
+                <div class="card">
+                  <div class="card__head">
+                    <div class="card__title">Преданкета (2–4 минуты)</div>
+                    <div class="card__subtitle">минимум текста: чипы + короткие поля</div>
+                  </div>
+                  <div class="card__body">
+                    <div class="field">
+                      <label class="label">Причина обращения (1 строка)</label>
+                      <input class="input" id="fReason" placeholder="Например: температура и кашель" />
+                    </div>
+                    <div class="field">
+                      <label class="label">Симптомы (выбери)</label>
+                      <div class="chips" id="symptoms"></div>
+                    </div>
+                    <div class="field">
+                      <label class="label">Аллергии</label>
+                      <input class="input" id="fAllergies" placeholder="Например: пенициллин" />
+                    </div>
+                    <div class="field">
+                      <label class="label">Лекарства сейчас</label>
+                      <input class="input" id="fMeds" placeholder="Например: парацетамол 500" />
+                    </div>
+                    <div class="field">
+                      <label class="label">Примечание (опционально)</label>
+                      <textarea class="input" id="fNotes" placeholder="Что важно врачу знать заранее"></textarea>
+                    </div>
+                    <button class="btn btn--primary" id="btnSaveIntake" type="button">
+                      Отправить врачу (сохранить)
+                    </button>
+                    <div class="success" id="intakeSaved" hidden>Анкета сохранена — врачу будет проще начать приём.</div>
+                  </div>
+                </div>
+
+                <div class="card">
+                  <div class="card__head">
+                    <div class="card__title">Как это экономит время</div>
+                    <div class="card__subtitle">врач читает, а не набирает</div>
+                  </div>
+                  <div class="card__body">
+                    <div class="quote">
+                      <div class="quote__text">
+                        “Перед приёмом я вижу жалобы, аллергии и лекарства — я задаю уточняющие
+                        вопросы, а не заполняю базу с нуля.”
+                      </div>
+                      <div class="quote__who">— врач (идеальный сценарий)</div>
+                    </div>
+                    <div class="hint">
+                      Дальше можно добавить голосовой ввод и автозаполнение по шаблону.
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="view" data-view="queue">
+              <div class="two">
+                <div class="card">
+                  <div class="card__head">
+                    <div class="card__title">Онлайн‑очередь</div>
+                    <div class="card__subtitle">статусы понятны без звонков</div>
+                  </div>
+                  <div class="card__body">
+                    <div class="status" id="patientQueueCard"></div>
+                    <div class="row">
+                      <button class="btn btn--primary" id="btnCheckIn" type="button">Я на месте</button>
+                      <button class="btn btn--secondary" id="btnLate" type="button">Опаздываю</button>
+                    </div>
+                    <div class="hint">
+                      В реальности “Я на месте” может быть QR‑чек‑ин у кабинета или в терминале.
+                    </div>
+                  </div>
+                </div>
+
+                <div class="card">
+                  <div class="card__head">
+                    <div class="card__title">Совет по UX</div>
+                    <div class="card__subtitle">что важно пациенту</div>
+                  </div>
+                  <div class="card__body">
+                    <ul class="bullets">
+                      <li>Показывать “примерно через N минут” + “вы следующий” крупно</li>
+                      <li>Дать 2 действия: “на месте” и “опаздываю”</li>
+                      <li>Не перегружать медицинскими терминами</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- RECEPTION -->
+        <section class="panel" data-screen="reception" hidden>
+          <div class="panel__head">
+            <div>
+              <div class="panel__title">Регистратура</div>
+              <div class="panel__subtitle">Очередь по кабинетам + быстрые статусы</div>
+            </div>
+            <div class="tabs" role="tablist" aria-label="Регистратура">
+              <button class="tab tab--active" data-tab="queue" type="button">Живая очередь</button>
+              <button class="tab" data-tab="create" type="button">Создать запись</button>
+            </div>
+          </div>
+          <div class="panel__body">
+            <div class="view view--active" data-view="queue">
+              <div class="card">
+                <div class="card__head">
+                  <div class="card__title">Живая очередь (сегодня)</div>
+                  <div class="card__subtitle">изменения видит врач и пациент</div>
+                </div>
+                <div class="card__body">
+                  <div class="table" id="receptionTable"></div>
+                  <div class="hint">
+                    Главная экономия времени: статусы ставятся 1 кликом, без звонков и “кто следующий?”.
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="view" data-view="create">
+              <div class="two">
+                <div class="card">
+                  <div class="card__head">
+                    <div class="card__title">Быстрая запись за пациента</div>
+                    <div class="card__subtitle">минимум полей: ФИО + телефон + слот</div>
+                  </div>
+                  <div class="card__body">
+                    <div class="field">
+                      <label class="label">ФИО</label>
+                      <input class="input" id="rName" placeholder="Например: Иванов Иван" />
+                    </div>
+                    <div class="field">
+                      <label class="label">Телефон</label>
+                      <input class="input" id="rPhone" placeholder="+7..." />
+                    </div>
+                    <div class="field">
+                      <label class="label">К врачу</label>
+                      <select class="input" id="rDoctor">
+                        <option>Петрова А.В. (Терапевт)</option>
+                        <option>Соколов Д.М. (Кардиолог)</option>
+                      </select>
+                    </div>
+                    <div class="field">
+                      <label class="label">Время</label>
+                      <select class="input" id="rTime">
+                        <option>Сегодня 10:40</option>
+                        <option>Сегодня 11:00</option>
+                        <option>Сегодня 11:20</option>
+                      </select>
+                    </div>
+                    <button class="btn btn--primary" id="btnReceptionCreate" type="button">
+                      Создать запись и добавить в очередь
+                    </button>
+                    <div class="success" id="receptionCreated" hidden>Запись создана.</div>
+                  </div>
+                </div>
+
+                <div class="card">
+                  <div class="card__head">
+                    <div class="card__title">Подсказка</div>
+                    <div class="card__subtitle">что убрать из процессов</div>
+                  </div>
+                  <div class="card__body">
+                    <ul class="bullets">
+                      <li>Не заставлять регистратуру заполнять медицинские поля</li>
+                      <li>Всё медицинское — в преданкете пациента и экране врача</li>
+                      <li>Регистратура управляет только логистикой (время/статус)</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- DOCTOR -->
+        <section class="panel" data-screen="doctor" hidden>
+          <div class="panel__head">
+            <div>
+              <div class="panel__title">Врач</div>
+              <div class="panel__subtitle">1 экран = 1 пациент (сводка + шаблоны)</div>
+            </div>
+            <div class="tabs" role="tablist" aria-label="Врач">
+              <button class="tab tab--active" data-tab="shift" type="button">Смена</button>
+              <button class="tab" data-tab="visit" type="button">Приём</button>
+            </div>
+          </div>
+
+          <div class="panel__body">
+            <div class="view view--active" data-view="shift">
+              <div class="two">
+                <div class="card">
+                  <div class="card__head">
+                    <div class="card__title">Очередь у кабинета</div>
+                    <div class="card__subtitle">следующий пациент виден сразу</div>
+                  </div>
+                  <div class="card__body">
+                    <div id="doctorQueue"></div>
+                    <div class="row">
+                      <button class="btn btn--primary" id="btnCallNext" type="button">
+                        Вызвать следующего
+                      </button>
+                      <button class="btn btn--secondary" id="btnOpenVisit" type="button">
+                        Открыть приём
+                      </button>
+                    </div>
+                    <div class="hint">
+                      Ключ: врач не ищет пациента по спискам — очередь и “следующий” всегда под рукой.
+                    </div>
+                  </div>
+                </div>
+
+                <div class="card">
+                  <div class="card__head">
+                    <div class="card__title">Почему это = больше общения</div>
+                    <div class="card__subtitle">что происходит в кабинете</div>
+                  </div>
+                  <div class="card__body">
+                    <ul class="bullets">
+                      <li>До приёма уже есть структура: жалобы/аллергии/лекарства</li>
+                      <li>Шаблон осмотра заполняется чек‑листом, а не набором текста</li>
+                      <li>Итог формируется автоматически (“план”, “рекомендации”)</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="view" data-view="visit">
+              <div class="visit">
+                <div class="visit__left">
+                  <div class="card">
+                    <div class="card__head">
+                      <div class="card__title">Очередь</div>
+                      <div class="card__subtitle">мини‑лист для быстрого переключения</div>
+                    </div>
+                    <div class="card__body" id="visitQueueMini"></div>
+                  </div>
+                </div>
+
+                <div class="visit__center">
+                  <div class="card">
+                    <div class="card__head">
+                      <div class="card__title">Сводка пациента</div>
+                      <div class="card__subtitle">то, что нужно в первые 10 секунд</div>
+                    </div>
+                    <div class="card__body" id="patientSummary"></div>
+                  </div>
+
+                  <div class="card mt">
+                    <div class="card__head">
+                      <div class="card__title">Итог приёма (минимум текста)</div>
+                      <div class="card__subtitle">врач фиксирует решение, а не переписывает историю</div>
+                    </div>
+                    <div class="card__body">
+                      <div class="field">
+                        <label class="label">Кратко</label>
+                        <input class="input" id="dSummary" placeholder="Например: ОРВИ, лёгкое течение" />
+                      </div>
+                      <div class="field">
+                        <label class="label">План</label>
+                        <textarea class="input" id="dPlan" placeholder="Например: питьевой режим, жаропонижающее..." ></textarea>
+                      </div>
+                      <div class="row">
+                        <button class="btn btn--primary" id="btnFinishVisit" type="button">Завершить приём</button>
+                        <button class="btn btn--secondary" id="btnTemplateOrvi" type="button">Шаблон “ОРВИ”</button>
+                        <button class="btn btn--secondary" id="btnTemplatePressure" type="button">Шаблон “Давление”</button>
+                      </div>
+                      <div class="success" id="visitFinished" hidden>Готово. Можно приглашать следующего.</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="visit__right">
+                  <div class="card">
+                    <div class="card__head">
+                      <div class="card__title">Быстрые действия</div>
+                      <div class="card__subtitle">без поиска в меню</div>
+                    </div>
+                    <div class="card__body">
+                      <button class="btn btn--secondary w" type="button">Направление</button>
+                      <button class="btn btn--secondary w" type="button">Рецепт</button>
+                      <button class="btn btn--secondary w" type="button">Больничный</button>
+                      <div class="hint">
+                        В реальной системе кнопки создают документ с автозаполнением.
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="card mt">
+                    <div class="card__head">
+                      <div class="card__title">Предупреждения</div>
+                      <div class="card__subtitle">не пропустить важное</div>
+                    </div>
+                    <div class="card__body" id="alerts"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="container footer__inner">
+        <div>Макет для демонстрации идеи ускорения приёма.</div>
+        <div class="muted">HTML/CSS/JS · локально · без базы данных</div>
+      </div>
+    </footer>
+
+    <script src="./script.js"></script>
+  </body>
+</html>
+
